@@ -1,4 +1,4 @@
-# rtsp_ffmpeg_bash
+# FFMPEG Surveillance Camera Manager
 Manage multiple simultaneous RTSP video streams (e.g. surveilance footage) using FFmpeg and BASH.
 
 The approach to managing the footage is to first acquire the footage raw, then gradually apply encoding and processing as CPU processing power permits.
