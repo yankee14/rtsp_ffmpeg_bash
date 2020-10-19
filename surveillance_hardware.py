@@ -27,8 +27,8 @@ class SurveillanceHardware:
 
     def read_available_cores(self):
         print('Reading current usable core count')
-        self.core_count = psutil.cpu_count(logical=True)
-        print(f'Found {self.core_count} available cores')
+        self.available_cores = psutil.cpu_count(logical=True)
+        print(f'Found {self.available_cores} available cores')
 
     def benchmark(self):
         print('Benchmarking')
