@@ -4,18 +4,27 @@ import configparser
 
 class SurveillanceConfiguration:
     """ Manage and monitor surveillance configuration """
-    def __init__(self):
-        self.CONFIGURATION_FILEPATH = './surveillance_configuration.ini'
 
-        self.latest_configuration = None
-        self.spawn_configuration_monitor()
+    CONFIGURATION_FILEPATH: str = './surveillance_configuration.ini'
 
-    def spawn_configuration_monitor(self):
+    @classmethod
+    def __init__(cls):
+        cls.latest_configuration = None
+        cls.spawn_configuration_monitor()
+
+    @classmethod
+    def spawn_configuration_monitor(cls):
         pass
 
-    def write_default_configuration(self):
+    @classmethod
+    def write_default_configuration(cls):
         pass
 
-    def read_configuration_from_disk(self):
+    @classmethod
+    def read_configuration_from_disk(cls):
         config = configparser.ConfigParser()
-        config.read(self.CONFIGURATION_FILEPATH)
+        config.read(cls.CONFIGURATION_FILEPATH)
+
+    @classmethod
+    def __repr__(cls):
+        pass

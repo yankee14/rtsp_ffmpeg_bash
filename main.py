@@ -1,93 +1,32 @@
-""" All-In-One RTSP Surveillance Recorder """
-import json
-import sys
+""" RTSP Surveillance Camera Manager """
 
-import ffmpeg
+from typing import List
+import time
+from camera import Camera
 
-#from surveillance import Surveillance
-#import ipdb
-#ipdb.set_trace()
-
-camera_list: tuple = []
-camera_streams_list = []
-output_dir: str = '/dev/shm'
-
+cameras: List[Camera] = []
 
 def enumerate_cameras():
-    """ Add camera links to list """
+    """ Generate set of test cameras """
+    cameras.extend([
+            Camera(name="trash", stream_url="rtsp://192.168.1.10:554/live/ch00_0"),
+            Camera(name="back patio", stream_url="rtsp://192.168.1.12:554/live/ch00_0"),
+            Camera(name="breaker", stream_url="rtsp://192.168.1.13:554/live/ch00_0"),
+            Camera(name="driveway", stream_url="rtsp://192.168.1.14:554/live/ch00_0")])
 
-    print("Enumerating cameras...")
-    camera_list.append(
-        ('test_camera', 'rtsp://192.168.1.15:554/live/ch00_0', False))
-    print("Enumerated: ", camera_list)
+    for camera in cameras:
+        print(camera)
 
+    cameras[0].probe()
 
-def probe_cameras():
-    """ Check which cameras in list are up """
+    time.sleep(10)
 
-    for camera_index, camera in enumerate(camera_list):
-        print('Checking if', camera[0], 'at', camera[1], 'is up')
-        try:
-            ffmpeg.probe(camera[1])
-        except ffmpeg.Error:
-            print('Could not probe', camera[0], 'at', camera[1])
-            continue
-
-        print(camera[0], 'at', camera[1], 'is up')
-        camera_list[camera_index] = (camera[0], camera[1], True)
-        print(camera_list)
-
-
-def prepare_streams():
-    """ Generate ffmpeg calls, but don't run yet """
-
-    for camera_index, camera in enumerate(camera_list):
-        stream = ffmpeg
-        stream = ffmpeg.input(camera[1])
-        stream = ffmpeg.output(stream,
-                               output_dir + '/' + camera[0] +
-                               '_%Y-%m-%d_%H-%M-%S.mp4',
-                               f='segment',
-                               segment_time='10',
-                               segment_atclocktime='1',
-                               strftime='1',
-                               reset_timestamps='1',
-                               vcodec='copy',
-                               acodec='n')
-        stream = ffmpeg.overwrite_output(stream)
-        camera_streams_list.append(stream)
-        print(stream.compile())
-
-
-def record_cameras():
-    """ Record camera streams """
-
-    for camera_index, camera in enumerate(camera_list):
-        if not camera[2]:
-            continue
-
-        print('Recording from', camera[0], 'at', camera[1])
-        try:
-            ffmpeg.run(camera_streams_list[camera_index])
-        except ffmpeg.Error:
-            print('had error')
-
+    for camera in cameras:
+        print(camera)
 
 def main():
-    """ Program entry """
-
-    print('hello')
-
+    """ Program entry point """
     enumerate_cameras()
-    probe_cameras()
-    prepare_streams()
-    record_cameras()
-    sys.exit()
-
-    probe = ffmpeg.probe('rtsp://192.168.1.15:554/live/ch00_0')
-    probe = json.dumps(probe, sort_keys=True, indent=4)
-    print(probe)
-
 
 if __name__ == "__main__":
     main()
